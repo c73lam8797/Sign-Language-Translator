@@ -8,7 +8,7 @@
       </b-card-text>
 
       <b-card-text>A second paragraph of text in the card.</b-card-text>
-
+      <font-awesome-icon :icon="['fab', 'github']" />
       <a href="#" class="card-link">Project Github</a>
       <!-- <b-link href="#" class="card-link">Another link</b-link> -->
     </b-card>
@@ -16,6 +16,7 @@
 </template>
 
 <script>
+
 export default {
   name: "Home"
   // props: {
