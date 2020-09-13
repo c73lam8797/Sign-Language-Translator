@@ -17,21 +17,25 @@
         </div>
       </div>
     </b-card>
-
-    <b-card-group deck v-for="im in translatedImages" :key="im.img">
-        <b-col>
-          <b-card v-bind:img-src="im.img" img-top>
-            <b-card-text>
-              {{ im.translation }}
-            </b-card-text>
-          </b-card>
-        </b-col>
+    <b-jumbotron v-if="translatedImages.length > 0" header="Translated Letters">
+      {{ translatedImages.map(x => x.translation) }}
+    </b-jumbotron>
+    <b-card-group deck >
+        <b-card v-bind:img-src="im.img" img-top class="predictions" v-for="im in translatedImages" :key="im.img">
+          <b-card-text>
+            {{ im.translation }}
+          </b-card-text>
+        </b-card>
     </b-card-group>
 
   </div>
 </template>
-
+<!-- ---------------------------------------------------------- -->
+<!-- ---------------------------------------------------------- -->
+<!-- ---------------------------------------------------------- -->
 <script>
+  const environment = process.env.NODE_ENV;
+  const url = (environment === "development") ? "http://localhost:5000" : "";
   const constraints = {
     video: true,
     audio: false
@@ -44,6 +48,7 @@
         webCamOn: false,
         loading: false,
         image: "",
+        predicting: false,
         translatedImages: [],
       }
     },
@@ -80,22 +85,43 @@
         const canvas = document.getElementById("canvas");
         const context = canvas.getContext('2d');
         const video = document.getElementById("video");
-        context.drawImage(video, 0,0, video.width, video.height, 0, 0, canvas.width, canvas.height);
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
         this.image = canvas.toDataURL("image/png");
       },
       translate: function() {
-        this.translatedImages.push({img: this.image, translation: ""});
+        this.predicting = true;
+        const params = { 
+          method: "POST",
+          body: JSON.stringify({ img: this.image }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
+        
+        fetch(url + "/api/predict", params)
+        .then(res => res.json())
+        .then(r => {
+          this.translatedImages.push({img: this.image, translation: r.classification, confidence: r.confidence});
+        })
+        .finally(() => this.predicting = false)
+        .catch(() => { });
+
       }
     },
     components: {
 
+    },
+    beforeDestroy: function() {
+      this.hideCamera();
     }
   };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
+<!-- ---------------------------------------------------------- -->
+<!-- ---------------------------------------------------------- -->
+<!-- ---------------------------------------------------------- -->
 <style scoped>
 .loading_container {
   padding: 15px;
