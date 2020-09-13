@@ -3,6 +3,7 @@
     <Title msg="Sign Language Translator"/>
     <Navbar />
     <Home />
+    <Picture />
   </div>
 </template>
 
@@ -10,13 +11,15 @@
 import Title from './components/Title.vue';
 import Navbar from './components/Navbar.vue';
 import Home from './components/Home.vue';
+import Picture from './components/PictureTranslation.vue';
 
 export default {
   name: 'App',
   components: {
     Title,
     Navbar,
-    Home
+    Home,
+    Picture,
   }
 }
 
