@@ -10,7 +10,6 @@
       <b-card-text>A second paragraph of text in the card.</b-card-text>
       <font-awesome-icon :icon="['fab', 'github']" />
       <a href="#" class="card-link">Project Github</a>
-      <!-- <b-link href="#" class="card-link">Another link</b-link> -->
     </b-card>
   </div>
 </template>
@@ -27,4 +26,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.card-link {
+  margin: 5px;
+}
 </style>
