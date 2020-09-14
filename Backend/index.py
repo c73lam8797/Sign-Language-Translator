@@ -5,6 +5,10 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import io, base64
 import numpy as np
+import cv2
+from io import BytesIO
+from PIL import Image
+from binascii import a2b_base64
 app = Flask(__name__)
 
 CORS(app, resources={r'/*': {'origins': '*'}})
@@ -17,16 +21,20 @@ def index():
 
 @app.route('/api/predict', methods=["POST"])
 def predict_img():
-    content = request.get_json()
-    img = keras.preprocessing.image.img_to_array(keras.preprocessing.image.load_img(io.BytesIO(base64.b64decode(content.get("img"))), target_size=(224, 224))) / 255.
+    content = request.form['b64']
+    content = content.replace('data:image/png;base64,', '')
+
+    HEIGHT = WIDTH = 180
+
+    img = Image.open(BytesIO(base64.b64decode(content + '==='))).convert('RGB')
+    img = img.resize((WIDTH, HEIGHT))
+    img  = np.array(img)/255
+
+
     img_array = tf.expand_dims(img, 0) # Create a batch
 
     predictions = model.predict(img_array)
     score = tf.nn.softmax(predictions[0])
-    # print(
-    #     "This image most likely belongs to {} with a {:.2f} percent confidence."
-    #     .format(class_names[np.argmax(score)], 100 * np.max(score))
-    # )
 
     class_names = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'del', 'nothing', 'space']
 

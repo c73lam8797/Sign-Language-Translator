@@ -5,20 +5,34 @@
         <div>
           <b-button class="buttons" v-if="!webCamOn" @click="showCamera" variant="outline-primary">Turn On WebCam</b-button>
           <b-button class="buttons" v-else @click="hideCamera" variant="outline-primary">Turn Off WebCam</b-button>
-          <b-button class="buttons" v-if="webCamOn" id="takephoto" @click="capture" variant="success">Capture</b-button>
         </div>
-        <div>
-          <div class="loading_container"><b-spinner v-if="loading" label="Spinning"></b-spinner></div>
-          <video autoplay id="video"></video>
-        </div>
-        <div>
-          <canvas id="canvas"></canvas>
-          <div><b-button class="buttons" v-if="image" @click="translate" variant="outline-info">Translate Image</b-button></div>
+        <div class="capture">
+          <b-card class="text-center" title="Video">
+            <b-card-text v-if="!webCamOn">
+              There is currently no video feed.
+            </b-card-text>
+            <!-- <div class="bg-secondary text-light">
+              This is some content within the default <samp>&lt;b-card-body&gt;</samp> block of the
+              <samp>&lt;b-card&gt;</samp> component. Notice the padding between the card's border and this
+              gray <samp>&lt;div&gt;</samp>.
+            </div> -->
+            <div v-if="loading" class="loading_container"><b-spinner label="Spinning"></b-spinner></div>
+            <video autoplay id="video"></video>
+            <b-button class="buttons" v-if="webCamOn" id="takephoto" @click="capture" variant="success">Capture</b-button>
+          </b-card>
+          <b-card class="text-center" title="Capture">
+            <b-card-text v-if="!image">
+              There is currently no image captured.
+            </b-card-text>
+            <canvas id="canvas"></canvas>
+            <b-button class="buttons" v-if="image" @click="translate" variant="outline-info">Translate Image</b-button>
+          </b-card>
         </div>
       </div>
     </b-card>
     <b-jumbotron v-if="translatedImages.length > 0" header="Translated Letters">
       {{ translatedImages.map(x => x.translation) }}
+      <b-button variant="danger" @click="reset"></b-button>
     </b-jumbotron>
     <b-card-group deck >
         <b-card v-bind:img-src="im.img" img-top class="predictions" v-for="im in translatedImages" :key="im.img">
@@ -85,19 +99,28 @@
         const canvas = document.getElementById("canvas");
         const context = canvas.getContext('2d');
         const video = document.getElementById("video");
+        canvas.height = video.offsetHeight;
+        canvas.width = video.offsetWidth;
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
         this.image = canvas.toDataURL("image/png");
       },
       translate: function() {
         this.predicting = true;
+        const formData = new FormData();
+        formData.append('b64', this.image);
         const params = { 
           method: "POST",
-          body: JSON.stringify({ img: this.image }),
+          // body: JSON.stringify({ img: this.image }),
+          body: formData,
           headers: {
-            'Content-Type': 'application/json',
+            // 'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': 'http://localhost:5000/api/predict'
           },
         }
+
+        console.log(params.body)
+        console.log(params.body.length);
         
         fetch(url + "/api/predict", params)
         .then(res => res.json())
@@ -106,7 +129,9 @@
         })
         .finally(() => this.predicting = false)
         .catch(() => { });
-
+      },
+      reset: function() {
+        this.translatedImages = [];
       }
     },
     components: {
@@ -123,11 +148,13 @@
 <!-- ---------------------------------------------------------- -->
 <!-- ---------------------------------------------------------- -->
 <style scoped>
+
 .loading_container {
   padding: 15px;
 }
 
 #video {
+  width: 100%;
   transform: rotateY(180deg);
   -webkit-transform:rotateY(180deg); /* Safari and Chrome */
   -moz-transform:rotateY(180deg); /* Firefox */
@@ -142,6 +169,22 @@
 
 .card-deck {
   margin: 0px;
+}
+
+.capture {
+  display: flex;
+  justify-content: space-around;
+}
+
+#canvas {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+
+.text-center {
+  width: 50%;
+  max-width: 50%;
 }
 
 </style>
