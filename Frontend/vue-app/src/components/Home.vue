@@ -1,16 +1,30 @@
 <template>
   <div id="home">
-    <b-card title="Home" sub-title="About This Project">
-      <b-card-text>
-        Some quick example text to build on the
-        <em>card title</em> and make up the bulk of the card's
-        content.
-      </b-card-text>
-
-      <b-card-text>A second paragraph of text in the card.</b-card-text>
-      <font-awesome-icon :icon="['fab', 'github']" />
-      <a href="#" class="card-link">Project Github</a>
-    </b-card>
+    <b-row class="justify-content-center">
+      <b-card title="Home" sub-title="About This Project" id="home_card" title-tag="h2">
+        <b-card-text>
+          Sign language is a fundamental method of communication for those with impaired hearing. However, it may be difficult for those who do not know sign language to communicate or understand those who are limited only to sign language as a form of communication.
+        </b-card-text>
+        <b-card-text>
+          This goal of this project is to prototype a solution to facilitate ease of communication with those with impaired hearing. This web application applies machine learning with TensorFlow to take sign language inputted by users and predict the translation. Below is a summary of the different sections on the site:
+        </b-card-text>
+        <b-card-body sub-title="Picture Translation">
+          <b-card-text>
+            Fill in something here
+          </b-card-text>
+        </b-card-body>
+        <b-card-body sub-title="Video Translation">
+          <b-card-text>
+            Fill in something here
+          </b-card-text>
+        </b-card-body>
+        <b-card-text>
+          <em>Please note this project is still a work in progress and is subject to future updates.</em>
+        </b-card-text>
+        <font-awesome-icon :icon="['fab', 'github']" />
+        <a href="https://github.com/c73lam8797/Sign-Language-Translator" class="card-link">Project Github</a>
+      </b-card>
+    </b-row>
   </div>
 </template>
 
@@ -28,5 +42,11 @@ export default {
 <style scoped>
 .card-link {
   margin: 5px;
+}
+
+#home_card {
+  max-width: 50%;
+  margin: 30px;
+  padding: 30px;
 }
 </style>

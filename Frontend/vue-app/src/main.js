@@ -6,9 +6,12 @@ import { BootstrapVue, IconsPlugin } from 'bootstrap-vue';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import { faVideo, faVideoSlash, faCamera } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-library.add(faGithub)
+library.add([faVideoSlash, faVideo, faGithub, faCamera])
 Vue.component('font-awesome-icon', FontAwesomeIcon)
+
+
 // Install BootstrapVue
 Vue.use(BootstrapVue);
 // Optionally install the BootstrapVue icon components plugin

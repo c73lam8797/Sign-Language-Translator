@@ -5,10 +5,9 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import io, base64
 import numpy as np
-import cv2
 from io import BytesIO
 from PIL import Image
-from binascii import a2b_base64
+
 app = Flask(__name__)
 
 CORS(app, resources={r'/*': {'origins': '*'}})

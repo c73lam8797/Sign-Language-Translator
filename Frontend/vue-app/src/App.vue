@@ -4,6 +4,7 @@
     <Navbar />
     <Home />
     <Picture />
+    <VideoTranslation />
   </div>
 </template>
 
@@ -12,6 +13,7 @@ import Title from './components/Title.vue';
 import Navbar from './components/Navbar.vue';
 import Home from './components/Home.vue';
 import Picture from './components/PictureTranslation.vue';
+import VideoTranslation from './components/VideoTranslation.vue';
 
 export default {
   name: 'App',
@@ -20,6 +22,7 @@ export default {
     Navbar,
     Home,
     Picture,
+    VideoTranslation,
   }
 }
 

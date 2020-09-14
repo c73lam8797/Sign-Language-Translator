@@ -1,52 +1,64 @@
 <template>
   <div id="picture">
-    <b-card>
+    <b-card title="Picture Translation" title-tag="h2">
       <div id="camera">
         <div>
-          <b-button class="buttons" v-if="!webCamOn" @click="showCamera" variant="outline-primary">Turn On WebCam</b-button>
-          <b-button class="buttons" v-else @click="hideCamera" variant="outline-primary">Turn Off WebCam</b-button>
+          <b-button class="buttons" v-if="!webCamOn" @click="showCamera" variant="outline-primary"><font-awesome-icon :icon="['fas', 'video']" /> Turn On WebCam</b-button>
+          <b-button class="buttons" v-else @click="hideCamera" variant="outline-primary"><font-awesome-icon :icon="['fas', 'video-slash']" /> Turn Off WebCam</b-button>
         </div>
         <div class="capture">
-          <b-card class="text-center" title="Video">
+          <b-card class="text-center video_cards" title="Video">
             <b-card-text v-if="!webCamOn">
               There is currently no video feed.
             </b-card-text>
-            <!-- <div class="bg-secondary text-light">
-              This is some content within the default <samp>&lt;b-card-body&gt;</samp> block of the
-              <samp>&lt;b-card&gt;</samp> component. Notice the padding between the card's border and this
-              gray <samp>&lt;div&gt;</samp>.
-            </div> -->
             <div v-if="loading" class="loading_container"><b-spinner label="Spinning"></b-spinner></div>
             <video autoplay id="video"></video>
-            <b-button class="buttons" v-if="webCamOn" id="takephoto" @click="capture" variant="success">Capture</b-button>
+            <b-button class="buttons" v-if="webCamOn" id="takephoto" @click="capture" variant="success"><font-awesome-icon :icon="['fas', 'camera']" />  Capture</b-button>
           </b-card>
-          <b-card class="text-center" title="Capture">
+          <b-card class="text-center video_cards" title="Capture">
             <b-card-text v-if="!image">
               There is currently no image captured.
             </b-card-text>
             <canvas id="canvas"></canvas>
-            <b-button class="buttons" v-if="image" @click="translate" variant="outline-info">Translate Image</b-button>
+            <b-button class="buttons" v-if="image" @click="translate" variant="outline-info">Translate Capture</b-button>
+            <b-button class="buttons" v-if="image" @click="clearCanvas" variant="outline-danger">Clear Capture</b-button>
           </b-card>
         </div>
       </div>
+      <b-jumbotron>
+        <h4>Translated Letters</h4>
+        {{ translatedImages.map(x => x.translation).join("") }}
+        <b-card-text v-if="translatedImages.length === 0">
+          There are currently no translated letters.
+        </b-card-text>
+        <b-row class="justify-content-center" style="marginTop: 20px"> 
+          <b-button variant="danger" @click="clear" v-if="translatedImages.length > 0">Clear All Predictions</b-button>
+        </b-row>
+      </b-jumbotron>
+      <b-jumbotron>
+        <h4>Predictions</h4>
+        <b-card-text v-if="translatedImages.length === 0">
+          There are currently no predictions.
+        </b-card-text>
+        <div id="predictions">
+          <b-card v-bind:img-src="im.img" img-top class="predictions" v-for="im in translatedImages" :key="im.img">
+            <b-card-text>
+              Translation: {{ im.translation }}
+            </b-card-text>
+            <b-card-text>
+              Confidence: {{ im.confidence.toFixed(2) }}%
+            </b-card-text>
+          </b-card>
+        </div>
+      </b-jumbotron>
     </b-card>
-    <b-jumbotron v-if="translatedImages.length > 0" header="Translated Letters">
-      {{ translatedImages.map(x => x.translation) }}
-      <b-button variant="danger" @click="reset"></b-button>
-    </b-jumbotron>
-    <b-card-group deck >
-        <b-card v-bind:img-src="im.img" img-top class="predictions" v-for="im in translatedImages" :key="im.img">
-          <b-card-text>
-            {{ im.translation }}
-          </b-card-text>
-        </b-card>
-    </b-card-group>
-
   </div>
 </template>
+
 <!-- ---------------------------------------------------------- -->
 <!-- ---------------------------------------------------------- -->
 <!-- ---------------------------------------------------------- -->
+
 <script>
   const environment = process.env.NODE_ENV;
   const url = (environment === "development") ? "http://localhost:5000" : "";
@@ -89,6 +101,9 @@
           tracks.forEach(x => x.stop());
         }
 
+        this.clearCanvas();
+      },
+      clearCanvas: function () {
         //clear canvas and current img
         this.image = "";
         const canvas = document.getElementById("canvas");
@@ -130,7 +145,7 @@
         .finally(() => this.predicting = false)
         .catch(() => { });
       },
-      reset: function() {
+      clear: function() {
         this.translatedImages = [];
       }
     },
@@ -147,6 +162,7 @@
 <!-- ---------------------------------------------------------- -->
 <!-- ---------------------------------------------------------- -->
 <!-- ---------------------------------------------------------- -->
+
 <style scoped>
 
 .loading_container {
@@ -185,6 +201,23 @@
 .text-center {
   width: 50%;
   max-width: 50%;
+}
+
+.predictions {
+  width: 19%;
+  margin: 0.5%;
+  padding: 0.5%;
+  border: solid 1px black;
+}
+
+#predictions {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.video_cards {
+  margin: 10px;
 }
 
 </style>
