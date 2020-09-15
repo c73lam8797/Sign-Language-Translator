@@ -60,7 +60,7 @@
               There are currently no predictions.
             </b-card-text>
             <div id="predictions">
-              <b-card v-bind:img-src="im.img" img-top class="predictions" v-for="im in translatedImages" :key="im.img">
+              <b-card v-bind:img-src="im.img" img-top class="prediction_cards" v-for="im in translatedImages" :key="im.img">
                 <b-card-text>Translation: {{ im.translation }}</b-card-text>
                 <b-card-text>Confidence: {{ im.confidence.toFixed(2) }}%</b-card-text>
               </b-card>
@@ -155,18 +155,6 @@
       },
       translate: function() {
         this.predicting = true;
-        // const formData = new FormData();
-        // formData.append('b64', this.image);
-        // const params = { 
-        //   method: "POST",
-        //   body: formData,
-        //   headers: {
-        //     'Access-Control-Allow-Origin': 'http://localhost:5000/api/predict'
-        //   },
-        // }
-
-        // fetch(url + "/api/predict", params)
-        // .then(res => res.json())
         send_request(this.image)
         .then(r => {
           this.translatedImages.push({img: this.image, translation: r.classification, confidence: r.confidence});
@@ -249,8 +237,9 @@
   max-width: 50%;
 }
 
-.predictions {
-  width: 19%;
+.prediction_cards {
+  min-width: 19%;
+  max-width: 19%;
   margin: 0.5%;
   padding: 0.5%;
   background-color: rgba(66,66,66,0.5);
@@ -258,11 +247,10 @@
 }
 
 #predictions {
-  display: flex;
-  /* justify-content: flex-start;
-  flex-wrap: wrap; */
   overflow-x: auto;
+  display: flex;
 }
+
 
 .video_cards {
   margin: 10px;
