@@ -3,10 +3,10 @@
     <b-row class="justify-content-center" no-gutters>
       <b-card title="Home" sub-title="About This Project" id="home_card" title-tag="h2">
         <b-card-text>
-          Sign language is a fundamental method of communication for those with impaired hearing. However, it may be difficult for those who do not know sign language to communicate or understand those who are limited only to sign language as a form of communication.
+          Sign language is a fundamental method of communication for many, such as those with impaired hearing. However, it may be difficult for those who do not know sign language to communicate or understand those who are limited only to sign language as a form of communication.
         </b-card-text>
         <b-card-text>
-          This goal of this project is to prototype a solution to facilitate ease of communication with those with impaired hearing. This web application applies machine learning with TensorFlow to take sign language inputted by users and predict the translation. Below is a summary of the different sections on the site:
+          This goal of this project is to prototype a solution to facilitate communication with those who are limited to using sign language. This web application applies machine learning with TensorFlow to take sign language inputted by users and predict the translation. Below is a summary of the different sections on the site:
         </b-card-text>
         <b-card-body sub-title="Picture Translation">
           <b-card-text>
@@ -45,8 +45,16 @@ export default {
 }
 
 #home_card {
-  max-width: 50%;
+  max-width: 60%;
   margin: 30px;
   padding: 30px;
+}
+
+@media only screen and (max-width: 1024px) {
+  #home_card {
+    max-width: 95%;
+    margin: 30px 0px;
+    padding: 10px;
+  }
 }
 </style>

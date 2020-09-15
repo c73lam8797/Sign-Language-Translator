@@ -10,7 +10,7 @@
           <b-button class="buttons" v-if="Boolean(uploadedFile)" @click="uploadedFile = null" variant="outline-danger" style="margin-top: 15px">Clear Uploaded Image</b-button>
         </b-card>
         <!-- Webcam button group -->
-        <b-card class="file_cards" title="Use WebCam">
+        <b-card class="file_cards" title="Use WebCam" sub-title="Please note that this feature may not work on mobile.">
           <b-button class="buttons" v-if="!webCamOn" @click="showCamera" variant="outline-primary"><font-awesome-icon v-if="!loading" :icon="['fas', 'video']" />
             <b-spinner v-if="loading" small label="Spinning"></b-spinner>  
             <span v-else> Turn On WebCam</span>
@@ -21,7 +21,7 @@
           </b-button>
          <!-- Webcam video stream -->
           <b-card-body class="capture">
-            <b-card class="text-center video_cards" title="Video">
+            <b-card class="text-center video_cards" title="Video" id="video-card">
               <b-card-text v-if="!webCamOn">
                 There is currently no video feed.
               </b-card-text>
@@ -29,7 +29,7 @@
               <video autoplay id="video"></video>
               <b-button class="buttons" v-if="webCamOn" id="takephoto" @click="capture" variant="success"><font-awesome-icon :icon="['fas', 'camera']" />  Capture</b-button>
             </b-card>
-            <b-card class="text-center video_cards" title="Capture">
+            <b-card class="text-center video_cards" title="Capture" id="capture-card">
               <b-card-text v-if="!image">
                 There is currently no image captured.
               </b-card-text>
@@ -260,7 +260,9 @@
 .file_cards {
   width: 100%;
   margin: 30px 0px;
+  color: black;
 }
+
 
 #media_wrapper {
   margin: 10px 0px;
@@ -269,12 +271,39 @@
 #scrollToPredictionsWrapper {
   color: white;
 }
+#scrollToPredictions {
+  border: 1px solid white;
+}
+
 #scrollToPredictions:hover {
   transform: translateY(-5px);
 }
 
 #picture_card {
-  /* background-color: transparent; */
+  background-color: transparent;
+  border: none;
 }
 
+#picture_card .card-title {
+  color: white;
+}
+
+#translations_predictions .card-title, .file_cards .card-title {
+  color: black !important;
+}
+
+@media only screen and (max-width: 1024px) {
+  .capture {
+    flex-wrap: wrap;
+  } 
+  #video-card {
+    min-width: 100%;
+  }
+  #capture-card {
+    min-width: 100%
+  }
+  .prediction_cards {
+    min-width: 99%;
+  }
+}
 </style>
