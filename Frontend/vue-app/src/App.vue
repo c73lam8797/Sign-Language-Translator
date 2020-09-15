@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <Title msg="Sign Language Translator"/>
+    <Title msg="—  Sign Language Translator  —"/>
     <Navbar />
     <Home />
     <Picture />
@@ -36,5 +36,6 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  scroll-behavior: smooth;
 }
 </style>

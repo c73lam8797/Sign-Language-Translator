@@ -1,6 +1,6 @@
 <template>
   <div id="home">
-    <b-row class="justify-content-center">
+    <b-row class="justify-content-center" no-gutters>
       <b-card title="Home" sub-title="About This Project" id="home_card" title-tag="h2">
         <b-card-text>
           Sign language is a fundamental method of communication for those with impaired hearing. However, it may be difficult for those who do not know sign language to communicate or understand those who are limited only to sign language as a form of communication.
@@ -10,12 +10,12 @@
         </b-card-text>
         <b-card-body sub-title="Picture Translation">
           <b-card-text>
-            Fill in something here
+            Users have the option of either capturing a picture using their device's webcam, or upload an image themselves. Upon sending, the image is sent to the model, in which it returns a prediction along with a 'confidence scoring' of its classification.
           </b-card-text>
         </b-card-body>
         <b-card-body sub-title="Video Translation">
           <b-card-text>
-            Fill in something here
+            This section is under development.
           </b-card-text>
         </b-card-body>
         <b-card-text>
