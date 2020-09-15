@@ -1,16 +1,16 @@
 <template>
   <div id="picture">
-    <b-card title="Picture Translation" title-tag="h2" sub-title="Upload a file or take a picture with your webcam!">
+    <b-card id="picture_card" class="page_section" title="Picture Translation" title-tag="h2" sub-title="Upload a file or take a picture with your webcam!">
+      <a href="#translations_predictions" id="scrollToPredictionsWrapper"><b-button variant="dark" id="scrollToPredictions">↓</b-button></a>
       <div id="media_wrapper">
         <!-- Upload file -->
-        <b-card class="file_cards">
+        <b-card class="file_cards" title="Upload Image">
           <b-form-file accept="image/jpeg, image/png" v-model="uploadedFile" :state="Boolean(uploadedFile)"></b-form-file>
           <b-button class="buttons" v-if="Boolean(uploadedFile)" @click="translateUploadedFile" variant="outline-info" style="margin-top: 15px">Translate Uploaded Image</b-button>
           <b-button class="buttons" v-if="Boolean(uploadedFile)" @click="uploadedFile = null" variant="outline-danger" style="margin-top: 15px">Clear Uploaded Image</b-button>
         </b-card>
-
         <!-- Webcam button group -->
-        <b-card class="file_cards">
+        <b-card class="file_cards" title="Use WebCam">
           <b-button class="buttons" v-if="!webCamOn" @click="showCamera" variant="outline-primary"><font-awesome-icon v-if="!loading" :icon="['fas', 'video']" />
             <b-spinner v-if="loading" small label="Spinning"></b-spinner>  
             <span v-else> Turn On WebCam</span>
@@ -42,28 +42,32 @@
       </div>
       
       <!-- Predictions and translations -->
-      <b-jumbotron>
-        <h4>Translated Letters</h4>
-        {{ translatedImages.map(x => x.translation).join(", ") }}
-        <b-card-text v-if="translatedImages.length === 0">
-          There are currently no translated letters.
-        </b-card-text>
-        <b-row class="justify-content-center" style="marginTop: 20px"> 
-          <b-button variant="danger" @click="clear" v-if="translatedImages.length > 0">Clear All Predictions</b-button>
-        </b-row>
-      </b-jumbotron>
-      <b-jumbotron>
-        <h4>Predictions</h4>
-        <b-card-text v-if="translatedImages.length === 0">
-          There are currently no predictions.
-        </b-card-text>
-        <div id="predictions">
-          <b-card v-bind:img-src="im.img" img-top class="predictions" v-for="im in translatedImages" :key="im.img">
-            <b-card-text>Translation: {{ im.translation }}</b-card-text>
-            <b-card-text>Confidence: {{ im.confidence.toFixed(2) }}%</b-card-text>
-          </b-card>
-        </div>
-      </b-jumbotron>
+      <b-card title="Translations + Predictions" id="translations_predictions">
+        <b-card-body>
+          <b-jumbotron>
+            <!-- <h4>Translated Letters</h4> -->
+            {{ translatedImages.map(x => x.translation).join(", ") }}
+            <b-card-text v-if="translatedImages.length === 0">
+              There are currently no translated letters.
+            </b-card-text>
+            <b-row class="justify-content-center" style="marginTop: 20px"> 
+              <b-button variant="danger" @click="clear" v-if="translatedImages.length > 0">Clear All Predictions</b-button>
+            </b-row>
+          </b-jumbotron>
+          <b-jumbotron>
+            <!-- <h4>Predictions</h4> -->
+            <b-card-text v-if="translatedImages.length === 0">
+              There are currently no predictions.
+            </b-card-text>
+            <div id="predictions">
+              <b-card v-bind:img-src="im.img" img-top class="predictions" v-for="im in translatedImages" :key="im.img">
+                <b-card-text>Translation: {{ im.translation }}</b-card-text>
+                <b-card-text>Confidence: {{ im.confidence.toFixed(2) }}%</b-card-text>
+              </b-card>
+            </div>
+          </b-jumbotron>
+        </b-card-body>
+      </b-card>
     </b-card>
   </div>
 </template>
@@ -79,6 +83,21 @@
     video: true,
     audio: false
   };
+
+  const send_request = (b64_img) => {
+    const formData = new FormData();
+    formData.append('b64', b64_img);
+    const params = { 
+      method: "POST",
+      body: formData,
+      headers: {
+        'Access-Control-Allow-Origin': 'http://localhost:5000/api/predict'
+      },
+    }
+
+    return fetch(url + "/api/predict", params)
+            .then(res => res.json());
+  }
 
   let s = null;
   export default {
@@ -136,18 +155,19 @@
       },
       translate: function() {
         this.predicting = true;
-        const formData = new FormData();
-        formData.append('b64', this.image);
-        const params = { 
-          method: "POST",
-          body: formData,
-          headers: {
-            'Access-Control-Allow-Origin': 'http://localhost:5000/api/predict'
-          },
-        }
+        // const formData = new FormData();
+        // formData.append('b64', this.image);
+        // const params = { 
+        //   method: "POST",
+        //   body: formData,
+        //   headers: {
+        //     'Access-Control-Allow-Origin': 'http://localhost:5000/api/predict'
+        //   },
+        // }
 
-        fetch(url + "/api/predict", params)
-        .then(res => res.json())
+        // fetch(url + "/api/predict", params)
+        // .then(res => res.json())
+        send_request(this.image)
         .then(r => {
           this.translatedImages.push({img: this.image, translation: r.classification, confidence: r.confidence});
         })
@@ -158,7 +178,21 @@
         this.translatedImages = [];
       },
       translateUploadedFile: function() {
-
+        const reader = new FileReader();
+        //this even listener only gets called when you start reading the file
+        reader.addEventListener('load', () => {
+          const base64 = reader.result;
+          if (base64) {
+            send_request(base64)
+            .then(r => {
+              this.translatedImages.push({img: base64, translation: r.classification, confidence: r.confidence});
+            })
+            .finally(() => this.predicting = false)
+            .catch(() => { });
+          }
+        }, false);
+        reader.readAsDataURL(this.uploadedFile);
+   
       }
     },
     components: {
@@ -219,25 +253,40 @@
   width: 19%;
   margin: 0.5%;
   padding: 0.5%;
-  border: solid 1px black;
+  background-color: rgba(66,66,66,0.5);
+  color: white;
 }
 
 #predictions {
   display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
+  /* justify-content: flex-start;
+  flex-wrap: wrap; */
+  overflow-x: auto;
 }
 
 .video_cards {
   margin: 10px;
+  box-shadow: 3px 3px 2px 3px #888888;
 }
 
 .file_cards {
   width: 100%;
-  margin: 10px 0px;
+  margin: 30px 0px;
 }
 
 #media_wrapper {
   margin: 10px 0px;
 }
+
+#scrollToPredictionsWrapper {
+  color: white;
+}
+#scrollToPredictions:hover {
+  transform: translateY(-5px);
+}
+
+#picture_card {
+  /* background-color: transparent; */
+}
+
 </style>

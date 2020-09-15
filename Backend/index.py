@@ -22,6 +22,8 @@ def index():
 def predict_img():
     content = request.form['b64']
     content = content.replace('data:image/png;base64,', '')
+    content = content.replace('data:image/jpg;base64,', '')
+    content = content.replace('data:image/jpeg;base64,', '')
 
     HEIGHT = WIDTH = 180
 

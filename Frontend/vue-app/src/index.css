@@ -1,3 +1,12 @@
 body, html {
   scroll-behavior: smooth;
+  background-color: #292828;
+}
+
+.page_section{ 
+  margin: 15px;
+}
+
+.jumbotron {
+  background-color: rgba(61, 61, 61, 0.3);
 }

@@ -1,5 +1,5 @@
 <template>
-  <div id="home">
+  <div id="home" class="page_section">
     <b-row class="justify-content-center" no-gutters>
       <b-card title="Home" sub-title="About This Project" id="home_card" title-tag="h2">
         <b-card-text>

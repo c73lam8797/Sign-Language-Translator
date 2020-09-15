@@ -1,6 +1,6 @@
 <template>
   <div id="video">
-    <b-card title="Video Translation" sub-title="This section is under development." title-tag="h2">
+    <b-card class="page_section" title="Video Translation" sub-title="This section is under development." title-tag="h2">
 
     </b-card>
   </div>
