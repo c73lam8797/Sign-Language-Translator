@@ -1,8 +1,8 @@
 # Sign-Language-Translator
 
-Sign language is a fundamental method of communication for those with impaired hearing. However, it may be difficult for those who do not know sign language to communicate or understand those who are limited only to sign language as a form of communication.
+Sign language is a fundamental method of communication many, such as for those with impaired hearing. However, it may be difficult for those who do not know sign language to communicate or understand those who are limited only to sign language as a form of communication.
 
-This goal of this project is to prototype a solution to facilitate ease of communication with those with impaired hearing. This web application applies machine learning with TensorFlow to take sign language inputted by users and predict the translation.
+This goal of this project is to prototype a solution to facilitate communication with those with impaired hearing. This web application applies machine learning with TensorFlow to take sign language inputted by users and predict the translation.
 
 # About The Project
 * This project is a work in progress!
